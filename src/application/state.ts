@@ -14,11 +14,9 @@ const DEFAULT_STATE: State = {
 };
 
 export function createState(stories: Slide[]): [(a: Action) => void, Observable<State>] {
-
     const actions$ = new Subject<Action>();
-
     const state$ = new BehaviorSubject({ ...DEFAULT_STATE, stories });
-
+    
     createEffects(actions$, state$).subscribe(actions$);
 
     actions$.pipe(
