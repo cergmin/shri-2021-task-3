@@ -31,8 +31,10 @@ function onDocumentClick(e: MouseEvent) {
             target = target.parentElement;
         }
 
+        if (target !== null){
             const { action, params } = target.dataset;
             sendMessage(messageAction(action, params));
+        }
     }
 }
 
