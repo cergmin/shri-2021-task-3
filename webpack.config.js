@@ -9,7 +9,6 @@ module.exports = {
         index: './src/index.ts',
         frame: './src/frame.ts',
     },
-    devtool: 'inline-source-map',
     devServer: { contentBase: './dist' },
     plugins: [
         new CleanWebpackPlugin(), 

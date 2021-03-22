@@ -115,7 +115,22 @@ Uncaught TypeError: Cannot read property 'dataset' of null
 Стилистические ошибки были найдены с помощью ESLint. За основу ``.eslintrc.js`` был взят [Standard JS](https://standardjs.com/), но с некоторыми изменениями:
 ```js
 rules: {
-    'indent': ['error', 4],
-    'semi': [2, 'always']
+    'indent': ['error', 4, { SwitchCase: 1 }],
+    'semi': ['error', 'always']
 }
 ```
+#### Слишком большой размер выходных файлов
+Во время сборки проекта возникают предупреждения о слишком большом размере выходных файлов, например, размер index.[hash].js — 312 Кб. Он обусловлен не огромным весом подключаемых библиотек, а использованием Source Maps даже при сборке в продакшен.
+
+Если мы уберём из конфига webpack строчку ``devtool: 'inline‑source‑map'``, то размер index.[hash].js сократиться до 49 Кб.
+
+Во время разработки Source Maps — очень важный инструмент отладки, поэтому совсем без него обойтись нельзя. К счастью, у webpack есть консольный флаг ``‑‑devtool``, который позволит нам отдельно указать, нужно ли сейчас создавать Source Maps. Допишем к скриптам ``watch`` и ``start`` флаг ``--devtool inline-source-map``:
+```json
+"scripts": {
+    "build": "webpack --mode production",
+    "watch": "webpack --watch --mode development --devtool inline-source-map",
+    "start": "webpack serve --mode development --devtool inline-source-map --open"
+}
+``` 
+
+Теперь при сборке в продакшен файлы весят не больше 50 Кб, а во время разработки у нас есть Source Maps.
