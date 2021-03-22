@@ -3,16 +3,16 @@ import { SlideTheme } from './types';
 
 export const setScale = (el: HTMLDivElement, value: number) => {
     el.style.transform = `scaleX(${value.toFixed(5)})`;
-}
+};
 
 export const sendMessage = (iframe: HTMLIFrameElement, msg: XMessage) => {
     if (iframe && iframe.contentWindow) {
         iframe.contentWindow.postMessage(msg, '*');
     }
-}
+};
 
 export const initIframe = (parent: HTMLDivElement, onLoad: (iframe: HTMLIFrameElement) => void) => {
-    var iframe = document.createElement('iframe');
+    let iframe = document.createElement('iframe');
 
     iframe.classList.add('frame');
     iframe.src = 'frame.html';
@@ -33,10 +33,10 @@ export const initProgress = (parent: HTMLDivElement) => {
     container.appendChild(progress);
 
     parent.appendChild(container);
-    
+
     return progress;
-}
+};
 
 export const setElementTheme = (elem: HTMLElement, theme: SlideTheme) => {
     elem.classList.value = `theme_${theme}`;
-}
+};

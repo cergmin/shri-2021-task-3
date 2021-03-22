@@ -2,21 +2,21 @@ import { messageAction, XMessage } from './messages';
 import { setElementTheme } from './application/view';
 import './frame.css';
 
-interface ExtendedWindow extends Window { 
-    renderTemplate: (alias: string, data: object) => string 
+interface ExtendedWindow extends Window {
+    renderTemplate: (alias: string, data: object) => string
 }
 
-declare var window: ExtendedWindow;
+declare let window: ExtendedWindow;
 
-function ready() {
+function ready () {
     window.postMessage('load', '*');
 }
 
-function sendMessage(msg: XMessage) {
+function sendMessage (msg: XMessage) {
     window.postMessage(msg, '*');
-} 
+}
 
-function receiveMessage({ data }: MessageEvent<XMessage>) {
+function receiveMessage ({ data }: MessageEvent<XMessage>) {
     if (data.type === 'message@UPDATE') {
         document.body.innerHTML = window.renderTemplate(data.alias, data.data);
     } else if (data.type === 'message@SET_THEME') {
@@ -24,14 +24,14 @@ function receiveMessage({ data }: MessageEvent<XMessage>) {
     }
 }
 
-function onDocumentClick(e: MouseEvent) {
+function onDocumentClick (e: MouseEvent) {
     if (e.target instanceof HTMLElement) {
         let target = e.target;
-        while(target && !target.dataset.action) {
+        while (target && !target.dataset.action) {
             target = target.parentElement;
         }
 
-        if (target !== null){
+        if (target !== null) {
             const { action, params } = target.dataset;
             sendMessage(messageAction(action, params));
         }

@@ -27,5 +27,5 @@ export const descriptors: { [prop: string]: PropertyDescriptor } = {};
 
 export const errors = {
     0: 'Illegal state',
-    1: 'Drafts cannot have computed properties',
+    1: 'Drafts cannot have computed properties'
 };

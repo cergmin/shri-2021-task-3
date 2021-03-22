@@ -14,7 +14,7 @@ export const actionTimer = () => ({ type: 'timer' } as const);
 
 export const actionMessage = (action: string, params: string) => ({ type: 'message', action, params } as const);
 
-export type Action = 
+export type Action =
     | ReturnType<typeof actionNext>
     | ReturnType<typeof actionPrev>
     | ReturnType<typeof actionRestart>

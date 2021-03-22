@@ -5,7 +5,7 @@ import {
     actionPrev,
     actionNext,
     actionRestart,
-    actionSetTheme,
+    actionSetTheme
 } from './application/actions';
 import { createState } from './application/state';
 import { createCurrentDataSelector, createCurrentIndexSelector, createProgressSelector, createThemeSelector } from './application/selectors';
@@ -15,12 +15,12 @@ import './index.css';
 
 import { stories } from './data';
 
-for(let i = 1; i <= 12; i++){
+for (let i = 1; i <= 12; i++) {
     require(`./images/${i}.jpg`);
 }
 
-for(let theme of ['dark', 'light']){
-    for(let blockHeight of ['min', 'mid', 'max', 'extra']){
+for (const theme of ['dark', 'light']) {
+    for (const blockHeight of ['min', 'mid', 'max', 'extra']) {
         require(`./images/${blockHeight}-${theme}.png`);
     }
     require(`./images/button-${theme}.svg`);
@@ -31,9 +31,9 @@ require('./fonts/Roboto-Bold.ttf');
 require('./fonts/Roboto-Medium.ttf');
 require('./fonts/Roboto-Regular.ttf');
 
-const [dispatch, state$] = createState(stories);
+let [dispatch, state$] = createState(stories);
 
-function onMessage({ data }: MessageEvent<XMessage>) {
+function onMessage ({ data }: MessageEvent<XMessage>) {
     if (data.type === 'message@ACTION') {
         dispatch(actionMessage(data.action, data.params));
     }
@@ -66,7 +66,7 @@ createThemeSelector(state$)
     .subscribe(theme => {
         setElementTheme(document.body, theme);
         frames.forEach(iframe => sendMessage(iframe, messageSetTheme(theme)));
-    })
+    });
 
 document.querySelector<HTMLDivElement>('.set-light').addEventListener('click', () => dispatch(actionSetTheme('light')));
 document.querySelector<HTMLDivElement>('.set-dark').addEventListener('click', () => dispatch(actionSetTheme('dark')));

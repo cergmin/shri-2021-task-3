@@ -3,13 +3,14 @@ import produce, { Draft } from 'immer';
 import { Action } from './actions';
 import { descriptors, DRAFT_STATE, errors, INTERVAL, State } from './types';
 
-export function die(error: keyof typeof errors, ...args: any[]): never {
+export function die (error: keyof typeof errors, ...args: any[]): never {
     const e = errors[error];
     const msg = !e
         ? 'unknown error nr: ' + error
         : typeof e === 'function'
             // @ts-ignore
-            ? e.apply(null, args as any) : e;
+            ? e.apply(null, args as any)
+            : e;
     throw new Error(`[function] ${msg}`);
 }
 
@@ -61,7 +62,7 @@ export const data = produce((draft: Draft<State>, action: Action) => {
     }
 });
 
-export function proxyProperty(
+export function proxyProperty (
     prop: string | number,
     enumerable: boolean
 ): PropertyDescriptor {
@@ -72,13 +73,13 @@ export function proxyProperty(
         descriptors[prop] = desc = {
             configurable: true,
             enumerable,
-            get(this: any) {
+            get (this: any) {
                 const state = this[DRAFT_STATE];
                 assertUnrevoked(state);
                 // @ts-ignore
                 return objectTraps.get(state, prop);
             },
-            set(this: any, value) {
+            set (this: any, value) {
                 const state = this[DRAFT_STATE];
                 assertUnrevoked(state);
                 // @ts-ignore
