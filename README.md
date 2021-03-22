@@ -36,52 +36,52 @@ S2678: Type '"update"' is not comparable to type '"message" | "next" | "prev" | 
 Возьмём файлы ``stories.js`` и``stories.css`` из репозитория первого задания и скопируем их в директорию ``./pubilc``. Затем, из ``data.json`` перенесём информацию в ``src/data.ts``, преобразовав данные с помощью JSON.parse(json). На странице отображаются слайды, но весь медиаконтент отсутствует, это происходит, потому что в сборке он так же отсутствует. Скопируем папки ``src/images`` и ``src/fonts`` из репозитория первого проекта в папку ``src`` текущего проекта. Затем установим модуль ``file‑loader``, чтобы webpack мог добавить изображения и шрифты в бандл. Теперь добавим правила в ``webpack.config.js``:
 ```js
 module.exports = {
-	module: {
-		entry: {...},
-		rules: [
-			{...},
-			{
-				test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
-				use: [
-					{
-						loader:  'file-loader',
-						options: {
-							name:  '[name].[ext]',
-							outputPath:  'fonts/'
-						}
-					}
-				]
-			},
-			{
-				test: /\.(jpg|png|svg)$/,
-				use: [
-					{
-						loader:  'file-loader',
-						options: {
-							name:  '[name].[ext]',
-							outputPath:  'images/'
-						}
-					}
-				]
-			},
-			{...}
-		],
-	}
+    module: {
+        entry: {...},
+        rules: [
+            {...},
+            {
+                test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
+                use: [
+                    {
+                        loader:  'file-loader',
+                        options: {
+                            name:  '[name].[ext]',
+                            outputPath:  'fonts/'
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.(jpg|png|svg)$/,
+                use: [
+                    {
+                        loader:  'file-loader',
+                        options: {
+                            name:  '[name].[ext]',
+                            outputPath:  'images/'
+                        }
+                    }
+                ]
+            },
+            {...}
+        ],
+    }
 };
 ```
 Также, нужно подключить все медиа в ``src/index.ts``:
 ```js
 for(let  i = 1; i <= 12; i++){
-	require(`./images/${i}.jpg`);
+    require(`./images/${i}.jpg`);
 }
 
 for(let  theme  of ['dark', 'light']){
-	for(let  blockHeight  of ['min', 'mid', 'max', 'extra']){
-		require(`./images/${blockHeight}-${theme}.png`);
-	}
+    for(let  blockHeight  of ['min', 'mid', 'max', 'extra']){
+        require(`./images/${blockHeight}-${theme}.png`);
+    }
 
-	require(`./images/button-${theme}.svg`);
-	require(`./images/button-hover-${theme}.svg`);
+    require(`./images/button-${theme}.svg`);
+    require(`./images/button-hover-${theme}.svg`);
 }
 
 require(`./fonts/Roboto-Bold.ttf`);
@@ -107,3 +107,15 @@ Uncaught TypeError: Cannot read property 'dataset' of null
 Чтобы решить её, добавим в ``src/frame.ts`` в функцию ``onDocumentClick(...)`` условие ``target !== null``.
 
 Теперь ошибка не появляется.
+
+#### В мобильной версии плеера исчезает кнопка назад
+Если посмотреть на стили кнопки назад через инструменты разработчика, то становится видно, что она прячется меди запросом, когда размер экрана меньше 750 пикселей. Вряд ли это часть адаптивности плеера, поэтому ``display: none;`` стоит убрать.
+
+#### Стилистические ошибки
+Стилистические ошибки были найдены с помощью ESLint. За основу ``.eslintrc.js`` был взят [Standard JS](https://standardjs.com/), но с некоторыми изменениями:
+```js
+rules: {
+    'indent': ['error', 4],
+    'semi': [2, 'always']
+}
+```

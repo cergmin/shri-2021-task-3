@@ -69,12 +69,6 @@ body {
     transform: rotate(180deg);
 }
 
-@media (max-height: 750px) { 
-    .prev {
-        display: none;
-    }
-}
-
 .theme_light .button {
     color: #BFBFBF;
 }
