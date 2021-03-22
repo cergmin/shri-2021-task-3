@@ -15,6 +15,22 @@ import './index.css';
 
 import { stories } from './data';
 
+for(let i = 1; i <= 12; i++){
+    require(`./images/${i}.jpg`);
+}
+
+for(let theme of ['dark', 'light']){
+    for(let blockHeight of ['min', 'mid', 'max', 'extra']){
+        require(`./images/${blockHeight}-${theme}.png`);
+    }
+    require(`./images/button-${theme}.svg`);
+    require(`./images/button-hover-${theme}.svg`);
+}
+
+require('./fonts/Roboto-Bold.ttf');
+require('./fonts/Roboto-Medium.ttf');
+require('./fonts/Roboto-Regular.ttf');
+
 const [dispatch, state$] = createState(stories);
 
 function onMessage({ data }: MessageEvent<XMessage>) {

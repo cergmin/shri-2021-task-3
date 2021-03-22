@@ -6,14 +6,14 @@ The 'mode' option has not been set, webpack will fallback to 'production' for th
 
 S2678: Type '"update"' is not comparable to type '"message" | "next" | "prev" | "restart" | "theme" | "timer"'.
 ```
-Первое связано с отсутствием явного указания режима сборки проекта, исправим это, добавив ``--mode production`` к скрипту в ``package.json``.
+Первое связано с отсутствием явного указания режима сборки проекта, исправим это, добавив ``‑‑mode production`` к скрипту в ``package.json``.
 
 Второе можно решить, добавив в файле ```src/application/actions.ts``` тип возвращаемого значения функции ``actionUpdate(...)`` к типу ``Action``, чтобы в файле ``src/application/data.ts`` не возникала ошибка из-за того, что в ``switch (action.type) {...}`` есть ``case 'update'``.
 
 Пытаемся выполнить сборку ещё раз. Всё прошло успешно.
 
 ## Запуск приложения и навигация по слайдам
-Для начала, к команде запуска dev-сервера добавляем указание режима сборки ``--mode development``, потому что по умолчанию проект собирается для продакшена.
+Для начала, к команде запуска dev-сервера добавляем указание режима сборки ``‑‑mode development``, потому что по умолчанию проект собирается для продакшена.
 
 Запускаем сервер, открывается окно браузера с тестовыми слайдами. Пытаемся пролистать их с помощью кнопки вперёд, но она не работает. Открываем ``src/index.ts`` и видим, что на кнопки ``.prev`` и ``.next`` цепляется один и тот же обработчик клика ``actionPrev()``. Исправляем это, заменив для второй кнопки обработчик на ``actionNext()``. 
 
@@ -28,4 +28,62 @@ S2678: Type '"update"' is not comparable to type '"message" | "next" | "prev" | 
 
 Когда мы пытаемся изменить тему, нажав на соответствующую кнопку, то замечаем, что тема остаётся прежней, а сама кнопка пропадает. В инструментах разработчика видно, что после нажатия у тега ``<body>`` появляется сразу два класса: тёмной и светлой темы. Это происходит потому что в файле ``src/application/view.ts`` в функции ``setElementTheme(...)`` класс темы только добавляется.
 Чтобы это заменим строчку: ``elem.classList.add(`theme_${theme}`);``
-на: ``elem.classList.value = `theme_${theme}`;``.
+на: ``elem.classList.value = theme_${theme}`;``.
+
+## Перенос скриптов и стилей из первого задания
+Возьмём файлы ``stories.js`` и``stories.css`` из репозитория первого задания и скопируем их в директорию ``./pubilc``. Затем, из ``data.json`` перенесём информацию в ``src/data.ts``, преобразовав данные с помощью JSON.parse(json). На странице отображаются слайды, но весь медиаконтент отсутствует, это происходит, потому что в сборке он так же отсутствует. Скопируем папки ``src/images`` и ``src/fonts`` из репозитория первого проекта в папку ``src`` текущего проекта. Затем установим модуль ``file‑loader``, чтобы webpack мог добавить изображения и шрифты в бандл. Теперь добавим правила в ``webpack.config.js``:
+```js
+module.exports = {
+	module: {
+		entry: {...},
+		rules: [
+			{...},
+			{
+				test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
+				use: [
+					{
+						loader:  'file-loader',
+						options: {
+							name:  '[name].[ext]',
+							outputPath:  'fonts/'
+						}
+					}
+				]
+			},
+			{
+				test: /\.(jpg|png|svg)$/,
+				use: [
+					{
+						loader:  'file-loader',
+						options: {
+							name:  '[name].[ext]',
+							outputPath:  'images/'
+						}
+					}
+				]
+			},
+			{...}
+		],
+	}
+};
+```
+Также, нужно подключить все медиа в ``src/index.ts``:
+```js
+for(let  i = 1; i <= 12; i++){
+	require(`./images/${i}.jpg`);
+}
+
+for(let  theme  of ['dark', 'light']){
+	for(let  blockHeight  of ['min', 'mid', 'max', 'extra']){
+		require(`./images/${blockHeight}-${theme}.png`);
+	}
+
+	require(`./images/button-${theme}.svg`);
+	require(`./images/button-hover-${theme}.svg`);
+}
+
+require(`./fonts/Roboto-Bold.ttf`);
+require(`./fonts/Roboto-Medium.ttf`);
+require(`./fonts/Roboto-Regular.ttf`);
+```
+Теперь картинки и шрифты загружаются.
